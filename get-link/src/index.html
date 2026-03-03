@@ -1,0 +1,105 @@
+
+
+<!doctype html>
+
+<html>
+<head>
+<!-- <?php echo "Congrats on your php working. Now you can play with it as long as you want to. Please note that this line is a comment"; ?> -->
+	<style>
+		body {
+			font-size: 100%;
+		}
+	</style>
+</head>
+<p> It is good to see the page is working. Lets go and do something else.</p>
+<div>
+	<label>Enter base url</label><input type="text" style="width:200px" id="baseUrlTextBox" value="http://example.com/"><br>
+
+	<button onclick="document.getElementById('displayAllHtmlHere').innerHTML = source">Display html file</button> <button onclick="extractTextFromHtml()">Extract &lt;a&gt; tag</button>
+</div>
+
+
+<div id="displayAllHtmlHere">
+	<br>Display the document here
+</div>
+
+
+<script>
+
+let source;
+// ======== GREAT! it works ================
+async function extractTag() {
+	try {
+		source = await fetch("./print-this.html");
+		if (!source.ok) throw new Error("those who are behind fail in real life");
+
+		let result = await source.text();
+		source = result;
+		console.log(source);
+
+	} catch (error) {
+		console.log(error);
+	}
+
+
+}
+extractTag();
+
+//=========================================
+
+// ---- Test code with hardcoded html ----
+
+// a bunch of sample text as a test
+//let source = `<p>I am a paragraph</p><div><a href='something'>Link 1</a></div><a href="quote.html"> 	quote.html something like this </a><a href=noquote.html> noquote</a><a>nothing here</a><a href="folder/quote.html">folder and quote</a><a href='../back-one-step.htm'> something</a>`;
+
+function extractTextFromHtml() {
+	let urls;
+
+	let baseUrl = document.getElementById('baseUrlTextBox').value;
+	let baseDocumentUrl = window.location.origin;
+
+	let htmlDoc = document.getElementById('displayAllHtmlHere');
+	let baseText = htmlDoc.innerHTML; // the basics
+
+
+	let display = [];
+	display.toString = function() {
+		let array = [];
+		for (let text of this) {
+			array.push("wget " + text + "<br>");
+		}
+		return array.join(" ");
+	};
+
+
+
+	for (let text of document.getElementsByTagName('a')) {
+		let temp = text.href;
+
+		// use substring to cut off the document's base url so only the name of the document is shown
+		// and use the full url for those that aren't the same webpage
+		if (temp.substring(0, baseDocumentUrl.length) === baseDocumentUrl) {
+			temp = temp.substring(baseDocumentUrl.length, Infinity);
+			display.push(baseUrl + temp);
+		} else {
+			display.push(temp);
+		}
+	}
+
+	document.getElementById('displayAllHtmlHere').innerHTML = display.toString();
+
+	//console.log(display);
+
+	//for (let text of display) {
+	//	console.log(text);
+	//}
+
+			//document.getElementById('displayAllHtmlHere').innerHTML = display.replace(base, "") + "<br>" + document.getElementById('displayAllHtmlHere').innerHTML;
+}
+
+
+
+</script>
+
+</body>
+</html>
