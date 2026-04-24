@@ -9,13 +9,45 @@
 		body {
 			font-size: 100%;
 		}
+		button {
+			font-family: auto;
+			font-size: 100%;
+			background-color:#ffcccc;
+
+			border-left: 2px solid black;
+			border-top:2px solid gray;
+			border-right:2px solid gray;
+			border-bottom:2px solid black;
+
+			border-radius: 5px;
+
+			margin: 2px;
+			padding: 5px;
+
+		}
+		button:hover, button:focus{
+			background-color: gray;
+			cursor:pointer;
+		}
+		button:active {
+			background-color:black
+		}
+
+
 	</style>
 </head>
-<p> It is good to see the page is working. Lets go and do something else.</p>
+<p> It is good to see the page is working. Lets go and do something else.<br>
+Note: If you open this file without a web server, user the console to set <font style="monospace">source = </font> </p><br>
 <div>
 	<label>Enter base url</label><input type="text" style="width:200px" id="baseUrlTextBox" value="http://example.com/"><br>
 
-	<button onclick="document.getElementById('displayAllHtmlHere').innerHTML = source">Display html file</button> <button onclick="extractTextFromHtml()">Extract &lt;a&gt; tag</button>
+	<label>Enter document url (if file is not on a server)</label><input type="text" style="width:200px" id="baseDocumentUrlTextBox" value="file:///home/js/docker/docker-php/src/"><br><br>
+
+	<label>Paste your html document here</label><br>
+	<textarea id="htmlContent" style="width:200px;height:200px"></textarea><br>
+
+	<label>Press all the buttons here one by one in order</label><br>
+	<button onclick="extractTag()">1) Extract text</button> <button onclick="displayHtmlFile()">2) Display html file</button> <br><button onclick="extractTextFromHtml()">3) Extract &lt;a&gt; tag</button>  <button onclick="extractTextFromHtml(1)">3) Extract &lt;a&gt; tag with wget</button>
 </div>
 
 
@@ -26,9 +58,21 @@
 
 <script>
 
+//let source;
 let source;
+let baseUrl;
+let baseDocumentUrl;
+
+function extractTag() {
+	let temp = document.getElementById('htmlContent').value;
+	source = temp;
+}
+function displayHtmlFile() {
+	document.getElementById('displayAllHtmlHere').innerHTML = source;
+}
+
 // ======== GREAT! it works ================
-async function extractTag() {
+async function extractTagNotInUse() {
 	try {
 		source = await fetch("./print-this.html");
 		if (!source.ok) throw new Error("those who are behind fail in real life");
@@ -43,7 +87,7 @@ async function extractTag() {
 
 
 }
-extractTag();
+//extractTag();
 
 //=========================================
 
@@ -52,25 +96,36 @@ extractTag();
 // a bunch of sample text as a test
 //let source = `<p>I am a paragraph</p><div><a href='something'>Link 1</a></div><a href="quote.html"> 	quote.html something like this </a><a href=noquote.html> noquote</a><a>nothing here</a><a href="folder/quote.html">folder and quote</a><a href='../back-one-step.htm'> something</a>`;
 
-function extractTextFromHtml() {
+function extractTextFromHtml(wgetTrue = 0) 	{
 	let urls;
 
-	let baseUrl = document.getElementById('baseUrlTextBox').value;
-	let baseDocumentUrl = window.location.origin;
+	baseUrl = document.getElementById('baseUrlTextBox').value;
+	baseDocumentUrl = document.getElementById("baseDocumentUrlTextBox").value;
 
 	let htmlDoc = document.getElementById('displayAllHtmlHere');
 	let baseText = htmlDoc.innerHTML; // the basics
 
 
+	// --- For display all <a> tags ---
 	let display = [];
-	display.toString = function() {
+
+	let displayToStringNormal = function() {
 		let array = [];
+		for (let text of this) {
+			array.push(" &bull; " + text + "<br>");
+		}
+		return array.join(" ");
+	}
+	let displayToStringWget = function() {
+		let array = [];
+		array.push("<br>#This is a script you can run with linux<br>#** Note: ** wget WILL NOT alert you if you overwrite anything!!!!!<br><br>");
 		for (let text of this) {
 			array.push("wget " + text + "<br>");
 		}
 		return array.join(" ");
-	};
+	}
 
+	display.toString = wgetTrue ? displayToStringWget : displayToStringNormal;
 
 
 	for (let text of document.getElementsByTagName('a')) {
@@ -79,11 +134,14 @@ function extractTextFromHtml() {
 		// use substring to cut off the document's base url so only the name of the document is shown
 		// and use the full url for those that aren't the same webpage
 		if (temp.substring(0, baseDocumentUrl.length) === baseDocumentUrl) {
+			// strip out document url
 			temp = temp.substring(baseDocumentUrl.length, Infinity);
-			display.push(baseUrl + temp);
-		} else {
-			display.push(temp);
+			console.log(temp);
+			// replace with the real base url
+			temp = baseUrl + temp;
+			console.log(temp);
 		}
+		display.push(temp);
 	}
 
 	document.getElementById('displayAllHtmlHere').innerHTML = display.toString();
