@@ -1,26 +1,26 @@
 body {
 			font-size: 100%;
-		}
-		button {
-			font-family: auto;
-			font-size: 100%;
-			background-color:#ffcccc;
+}
+button {
+	font-family: auto;
+	font-size: 100%;
+	background-color:#ffcccc;
 
-			border-left: 3px solid #ccaaaa;
-			border-top: 3px solid gray;
-			border-right: 3px solid gray;
-			border-bottom: 3px solid #ccaaaa;
+	border-left: 3px solid #ccaaaa;
+	border-top: 3px solid gray;
+	border-right: 3px solid gray;
+	border-bottom: 3px solid #ccaaaa;
 
-			border-radius: 6px;
+	border-radius: 6px;
 
-			margin: 2px;
-			padding: 5px;
+	margin: 2px;
+	padding: 5px;
 
-		}
-		button:hover, button:focus{
-			background-color: gray;
-			cursor:pointer;
-		}
-		button:active {
-			background-color:white;
-		}
+}
+button:hover, button:focus{
+	background-color: gray;
+	cursor:pointer;
+}
+button:active {
+	background-color:white;
+}
