@@ -14,12 +14,12 @@
 			font-size: 100%;
 			background-color:#ffcccc;
 
-			border-left: 2px solid black;
-			border-top:2px solid gray;
-			border-right:2px solid gray;
-			border-bottom:2px solid black;
+			border-left: 3px solid #ccaaaa;
+			border-top: 3px solid gray;
+			border-right: 3px solid gray;
+			border-bottom: 3px solid #ccaaaa;
 
-			border-radius: 5px;
+			border-radius: 6px;
 
 			margin: 2px;
 			padding: 5px;
@@ -30,7 +30,7 @@
 			cursor:pointer;
 		}
 		button:active {
-			background-color:black
+			background-color:white;
 		}
 
 
@@ -39,15 +39,17 @@
 <p> It is good to see the page is working. Lets go and do something else.<br>
 Note: If you open this file without a web server, user the console to set <font style="monospace">source = </font> </p><br>
 <div>
-	<label>Enter base url</label><input type="text" style="width:200px" id="baseUrlTextBox" value="http://example.com/"><br>
+	<label>Enter base url </label><input type="text" style="width:200px" id="baseUrlTextBox" value="http://example.com/"><br>
 
-	<label>Enter document url (if file is not on a server)</label><input type="text" style="width:200px" id="baseDocumentUrlTextBox" value="file:///home/js/docker/docker-php/src/"><br><br>
+	<label>Enter document url (if file is not on a server) </label><input type="text" style="width:200px" id="baseDocumentUrlTextBox" value="file:///home/js/docker/docker-php/src/"><br><br>
 
 	<label>Paste your html document here</label><br>
 	<textarea id="htmlContent" style="width:200px;height:200px"></textarea><br>
 
 	<label>Press all the buttons here one by one in order</label><br>
-	<button onclick="extractTag()">1) Extract text</button> <button onclick="displayHtmlFile()">2) Display html file</button> <br><button onclick="extractTextFromHtml()">3) Extract &lt;a&gt; tag</button>  <button onclick="extractTextFromHtml(1)">3) Extract &lt;a&gt; tag with wget</button>
+
+	<button onclick="extractTag();wait();displayHtmlFile();extractTextFromHtml()">Extract &lt;a&gt; tag</button>
+	<button onclick="extractTag();wait();displayHtmlFile();extractTextFromHtml(1)">Extract &lt;a&gt; tag with wget</button>
 </div>
 
 
@@ -66,6 +68,10 @@ let baseDocumentUrl;
 function extractTag() {
 	let temp = document.getElementById('htmlContent').value;
 	source = temp;
+}
+async function wait() {
+	await new Promise(resolve => setTimeout(resolve, 1000));
+
 }
 function displayHtmlFile() {
 	document.getElementById('displayAllHtmlHere').innerHTML = source;
@@ -109,6 +115,8 @@ function extractTextFromHtml(wgetTrue = 0) 	{
 	// --- For display all <a> tags ---
 	let display = [];
 
+	// There are 2 versions of toString
+	// the function to use depends on which button the user pressed
 	let displayToStringNormal = function() {
 		let array = [];
 		for (let text of this) {
@@ -124,7 +132,7 @@ function extractTextFromHtml(wgetTrue = 0) 	{
 		}
 		return array.join(" ");
 	}
-
+	// the function to use depends on which button the user pressed
 	display.toString = wgetTrue ? displayToStringWget : displayToStringNormal;
 
 
