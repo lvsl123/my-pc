@@ -1,4 +1,4 @@
-#### How to extract and save links inside a webpage 
+#### How to extract and save links inside a webpage (go to src folder and download index.html)
 
 This is a feature that existed very long ago back to the old internet era. Now browsers no longer provide the feature to directly save a webpage for either offline use, or just save it directly. That is, including saving all images and links for future use. 
 
