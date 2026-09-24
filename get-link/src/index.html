@@ -41,7 +41,7 @@ Note: If you open this file without a web server, user the console to set <font 
 <div>
 	<label>Enter base url </label><input type="text" style="width:200px" id="baseUrlTextBox" value="http://example.com/"><br>
 
-	<label>Enter document url (if file is not on a server) </label><input type="text" style="width:200px" id="baseDocumentUrlTextBox" value="file:///home/js/docker/docker-php/src/"><br><br>
+	<label>Enter document url (if file is not on a server) </label><input type="text" style="width:200px" id="baseDocumentUrlTextBox" value=""><br><br>
 
 	<label>Paste your html document here</label><br>
 	<textarea id="htmlContent" style="width:200px;height:200px"></textarea><br>
@@ -107,6 +107,8 @@ function extractTextFromHtml(wgetTrue = 0) 	{
 
 	baseUrl = document.getElementById('baseUrlTextBox').value;
 	baseDocumentUrl = document.getElementById("baseDocumentUrlTextBox").value;
+	
+	if (baseDocumentUrl === "") baseDocumentUrl = window.location.toString().match('.*\/');
 
 	let htmlDoc = document.getElementById('displayAllHtmlHere');
 	let baseText = htmlDoc.innerHTML; // the basics
